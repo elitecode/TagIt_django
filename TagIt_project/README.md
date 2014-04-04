@@ -1,0 +1,29 @@
+TagIt
+==============
+
+TagIt is a web-app designed using Django.
+Its main purpose is to store and retrive URLs using some tags.
+
+It is the complete project with manage.py file. The app is present inside TagIt folder.
+Instructions
+==============
+To add a URL, type <br>
+< url>,< tag>,< tag>,< tag>..... <br>
+and press Add
+
+To lookup a URL using a tag, type <br>
+< tag> <br>
+and press Search
+
+Alternatively you can click on urls or tags displayed on the main page.
+
+Design
+==============
+
+The MVC architecture is used in designing this app.
+
+The information is stored in a database with Many-To-Many relationship between tables URLS and TAGS.
+
+The urls are parsed and views are called accordingly.
+
+The views return an HTML page using the templates.

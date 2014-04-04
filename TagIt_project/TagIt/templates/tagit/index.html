@@ -1,0 +1,72 @@
+<html>
+<head>
+	<title>TagIt!</title>
+	<link href="{{ STATIC_URL }}style.css" media="all" rel="stylesheet" type="text/css" />
+</head>
+<body onload='checkType()'>
+
+<h1>TagIt!</h1>
+
+<h3>Instructions!</h3>
+<ul>
+<li><b>To add new bookmark</b>:
+<b>type</b>: url<b>,</b>tag1<b>,</b>tag2<b>,</b>tag3 [Add]
+</li><li>
+<b>To search</b>:
+<b>type</b>: tag in field and click [Search]
+</li>
+</ul>
+{% if message %}
+<p align=center>{{message}}</p>
+{% endif %}
+<div id="searchbox">
+	<form action=/tagit/urls/ method=POST>
+	{% csrf_token %}
+	<input id="search" name="search" type="text" onkeyup="checkType()" placeholder="To add <Url>,<Tag1>,<Tag2>,<Tag3>,.., | To search <Tag>">
+	<input id="add-input" name="add-input" type="submit" value="Search">
+	</form>
+</div>
+
+<div id="tagbox">
+<p><b>Tags</b></p>
+	{% if tagList %}
+		{% for tag in tagList %}
+		<span><a href="/tagit/tag/{{ tag.id }}/">{{ tag.tag }}</a></span>
+		{% endfor %}
+	{% else %}
+		<tr><td>No tags available.</td></tr>
+	{% endif %}
+</div>
+<div id="resultbox">
+	<p><b>Search Results</b></p>
+<table id="bookmark-list">
+	{% if urlList %}
+		{% for url in urlList %}
+		<tr>
+			<td><a href="/tagit/link/{{ url.id }}/">{{ url.url }}</a></td>
+		</tr>
+		{% endfor %}
+	{% else %}
+		<tr><td>No urls available.</td></tr>
+	{% endif %}
+
+<script>
+
+function checkType()
+{
+	var bookmark_name = document.getElementById("search").value;
+      var tokens = bookmark_name.split(",");
+      document.getElementById("add-input").value="add";
+      if (tokens.length > 1) {
+        document.getElementById("add-input").html="Add";
+        document.getElementById("add-input").val="add";
+      } else {
+        document.getElementById("add-input").html="Search";
+        document.getElementById("add-input").value="Search";
+      }
+}
+
+</script>
+
+</body>
+<html>

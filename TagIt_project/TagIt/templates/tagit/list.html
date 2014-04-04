@@ -1,0 +1,35 @@
+<html>
+<head>
+	<title>TagIt!</title>
+	<link href="{{ STATIC_URL }}style.css" media="all" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<p id="notice"></p>
+<div id="tagbox">
+<p>
+  <b>Url:</b><br>
+  {% if qurl %}
+	{% for url in qurl %}
+		{{ url.url }}<br>
+	{% endfor %}
+  {% else %}
+	No urls available.
+  {% endif %}
+</p>
+
+<b>Tags:</b><br>
+    {% if qtag %}
+	{% for tag in qtag %}
+		{{ tag.tag }}
+	{% endfor %}
+  {% else %}
+	No Tags available.
+  {% endif %}
+<br>
+<a href=/tagit/>Back</a>
+</div>
+
+
+</body>
+<html>

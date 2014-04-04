@@ -1,0 +1,72 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+from TagIt.models import URLS, TAGS
+
+def index(request):
+	urlList = URLS.objects.all()
+	tagList = TAGS.objects.all()
+	context = {'urlList': urlList,'tagList':tagList}
+	return render(request, 'tagit/index.html', context)
+
+def about(request):
+	return HttpResponse("\
+		This is about page<br>\
+		<a href='../'>Back</a>"
+	)
+
+def urlSearch(p,request):
+	if p:
+		context = {'qurl':p[0].url.all(), 'qtag':[p[0]]}
+		return render(request, 'tagit/list.html', context)
+	else:
+		urlList = URLS.objects.all()
+		tagList = TAGS.objects.all()
+		context = {'urlList': urlList,'tagList':tagList,'message':"Tag Not Found"}
+		return render(request, 'tagit/index.html', context)
+
+def tagSearch(q,request):
+	if q:
+		context = {'qurl':[q[0]], 'qtag':q[0].tags_set.all()}
+		return render(request, 'tagit/list.html', context)
+	else:
+		urlList = URLS.objects.all()
+		tagList = TAGS.objects.all()
+		context = {'urlList': urlList,'tagList':tagList,'message':"URL Not Found"}
+		return render(request, 'tagit/index.html', context)
+
+
+def url(request,urlid):
+	return tagSearch(URLS.objects.filter(id=urlid),request)
+
+def tag(request,tagid):
+	return urlSearch(TAGS.objects.filter(id=tagid),request)
+
+def urls(request):
+	query=request.POST['search']
+	typ=request.POST['add-input']
+	a=[]
+	if(typ=='add'):
+		a=query.split(',')
+		p=URLS.objects.filter(url=a[0]);
+		if not p:
+			p=URLS(url=a[0])
+			p.save()
+			for x in a[1:]:
+				qt=TAGS.objects.filter(tag=x)
+				if not qt:
+					q=TAGS(tag=x)
+					q.save()
+					q.url.add(p)
+				else:
+					for q in qt:
+						q.url.add(p)
+			urlList = URLS.objects.all()
+			tagList = TAGS.objects.all()
+			context = {'urlList': urlList,'tagList':tagList,'message':'URL Successfully Added'}
+		else:
+			urlList = URLS.objects.all()
+			tagList = TAGS.objects.all()
+			context = {'urlList': urlList,'tagList':tagList,'message':'Website Exists'}
+	elif(typ=='Search'):
+		return urlSearch(TAGS.objects.filter(tag=query),request)
+	return render(request, 'tagit/index.html', context)
